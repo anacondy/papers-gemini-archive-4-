@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <style>
+        body { 
+            font-family: 'Courier New', monospace; 
+            background-color: #1a1a1a; 
+            color: #e0e0e0; 
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background-color: #333;
+            padding: 40px;
+            border-radius: 8px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
+        }
+        h1 { 
+            color: #4CAF50; 
+            margin-top: 0;
+            text-align: center;
+        }
+        .error {
+            background-color: #d32f2f;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        form { 
+            display: flex;
+            flex-direction: column;
+        }
+        label { 
+            display: block; 
+            margin-top: 15px; 
+            margin-bottom: 5px; 
+            color: #bbb; 
+        }
+        input[type="password"] { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 10px; 
+            background-color: #222; 
+            border: 1px solid #555; 
+            color: #e0e0e0; 
+            border-radius: 4px; 
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        input[type="submit"] { 
+            background-color: #4CAF50; 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            width: 100%; 
+            margin-top: 20px;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        input[type="submit"]:hover { 
+            background-color: #45a049; 
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .back-link a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>🔒 Admin Login</h1>
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+        <form method="post">
+            <label for="password">Enter Admin Password:</label>
+            <input type="password" name="password" id="password" placeholder="Enter password" required autofocus>
+            <input type="submit" value="Login">
+        </form>
+        <div class="back-link">
+            <a href="/">← Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>
