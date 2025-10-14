@@ -1,0 +1,5 @@
+# GitHub Pages Configuration
+theme: jekyll-theme-minimal
+title: Terminal Archives
+description: A secure, terminal-themed web application for archiving and searching previous year exam papers
+show_downloads: true
