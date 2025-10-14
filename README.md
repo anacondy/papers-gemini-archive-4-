@@ -6,6 +6,8 @@ A secure, terminal-themed web application for archiving and searching previous y
 ![Python](https://img.shields.io/badge/python-3.8+-blue)
 ![Flask](https://img.shields.io/badge/flask-3.0.0-lightgrey)
 
+> 📖 **[Read the Complete Wiki](WIKI.md)** for comprehensive documentation, advanced usage, API documentation, troubleshooting, and more!
+
 ## 🎯 Project Purpose
 
 This application provides a centralized platform for students to:
@@ -243,6 +245,25 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Database encryption
 - Comprehensive logging and monitoring
 - Web Application Firewall (WAF)
+
+---
+
+## 📚 Documentation
+
+For more detailed information, please refer to:
+
+- **[WIKI.md](WIKI.md)** - Complete documentation including:
+  - Detailed feature explanations
+  - Architecture and technical details
+  - API documentation
+  - Advanced configuration
+  - Troubleshooting guide
+  - Best practices
+  - FAQ and more
+
+- **[QUICKSTART.md](QUICKSTART.md)** - Quick setup guide for getting started in 5 minutes
+- **[SECURITY.md](SECURITY.md)** - Security policies, best practices, and vulnerability reporting
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Guidelines for contributing to the project
 
 ---
 
