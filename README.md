@@ -6,6 +6,12 @@ A secure, terminal-themed web application for archiving and searching previous y
 ![Python](https://img.shields.io/badge/python-3.8+-blue)
 ![Flask](https://img.shields.io/badge/flask-3.0.0-lightgrey)
 
+## 🌐 Live Demo
+
+**[View GitHub Pages Demo →](https://anacondy.github.io/papers-gemini-archive-4-/)**
+
+> ℹ️ **Note**: The GitHub Pages site shows a static demo/documentation page. This is a Flask application that requires a Python server to run locally for full functionality. See [Setup Instructions](#-setup-instructions) below.
+
 ## 🎯 Project Purpose
 
 This application provides a centralized platform for students to:
@@ -218,6 +224,25 @@ Contributions are welcome! Please:
 3. Commit your changes
 4. Push to the branch
 5. Open a Pull Request
+
+## 🚀 Deployment
+
+### GitHub Pages (Demo/Documentation)
+
+This repository includes a static demo page in the `/docs` folder. To enable GitHub Pages:
+
+1. Go to repository **Settings** → **Pages**
+2. Under **Source**, select:
+   - Branch: `main`
+   - Folder: `/docs`
+3. Click **Save**
+4. The demo will be available at: `https://anacondy.github.io/papers-gemini-archive-4-/`
+
+**Note**: GitHub Pages only hosts the static demo page. For the full Flask application, deploy to a platform that supports Python:
+- **Heroku**: Easy deployment with Git push
+- **PythonAnywhere**: Free tier available for Python apps
+- **AWS/DigitalOcean**: Full control with VPS hosting
+- **Render/Railway**: Modern deployment platforms
 
 ## 📄 License
 
