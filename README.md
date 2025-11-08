@@ -221,6 +221,25 @@ Contributions are welcome! Please:
 4. Push to the branch
 5. Open a Pull Request
 
+## 🚀 Deployment
+
+### GitHub Pages (Demo/Documentation)
+
+This repository includes a static demo page in the `/docs` folder. To enable GitHub Pages:
+
+1. Go to repository **Settings** → **Pages**
+2. Under **Source**, select:
+   - Branch: `main`
+   - Folder: `/docs`
+3. Click **Save**
+4. The demo will be available at: `https://anacondy.github.io/papers-gemini-archive-4-/`
+
+**Note**: GitHub Pages only hosts the static demo page. For the full Flask application, deploy to a platform that supports Python:
+- **Heroku**: Easy deployment with Git push
+- **PythonAnywhere**: Free tier available for Python apps
+- **AWS/DigitalOcean**: Full control with VPS hosting
+- **Render/Railway**: Modern deployment platforms
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
