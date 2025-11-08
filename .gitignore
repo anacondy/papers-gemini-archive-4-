@@ -19,7 +19,6 @@ parts/
 sdist/
 var/
 wheels/
-pip-wheel-metadata/
 *.egg-info/
 .installed.cfg
 *.egg
@@ -28,9 +27,10 @@ pip-wheel-metadata/
 instance/
 .webassets-cache
 
-# Uploads directory - ignore uploaded files but keep directory
-uploads/*
-!uploads/.gitkeep
+# Environment variables
+.env
+.env.local
+.env.*.local
 
 # IDE
 .vscode/
@@ -43,7 +43,8 @@ uploads/*
 .DS_Store
 Thumbs.db
 
-# Environment variables
-.env
-.env.local
-.flaskenv
+# Upload folder (contains user-uploaded files)
+uploads/
+
+# Logs
+*.log

@@ -1,298 +1,209 @@
-# Security Documentation
+# Security Policy
 
-## Security Audit Report
+## Supported Versions
 
-**Repository**: papers-gemini-archive-4-  
-**Date**: 2025-10-14  
-**Status**: Development/Testing Only - NOT Production Ready
+Currently supported versions of this project:
 
-## Security Rating: 7/10
+| Version | Supported          |
+| ------- | ------------------ |
+| 1.x.x   | :white_check_mark: |
 
-### ✅ Security Measures Implemented
+## Security Features
 
-#### 1. File Upload Security
-- **File Type Validation**: Only PDF files allowed
-- **File Size Limit**: 10MB maximum
-- **Filename Sanitization**: All filenames sanitized to prevent injection
-- **Path Traversal Prevention**: Multiple checks to prevent directory traversal attacks
-- **Secure Filename Generation**: Uses werkzeug.secure_filename()
-- **File Extension Validation**: Double-checks file extensions
+This application implements several security measures:
 
-#### 2. HTTP Security Headers
-- **X-Content-Type-Options**: `nosniff` - Prevents MIME type sniffing
-- **X-Frame-Options**: `DENY` - Prevents clickjacking attacks
-- **X-XSS-Protection**: `1; mode=block` - Enables XSS filter
-- **Strict-Transport-Security**: Forces HTTPS connections
-- **Content-Security-Policy**: Restricts resource loading
+### Authentication & Authorization
+- Password-protected admin access using Werkzeug password hashing
+- Session management with secure cookies (HTTPOnly, Secure, SameSite)
+- Login rate limiting (5 attempts per minute)
 
-#### 3. Input Validation
-- **Required Field Validation**: All required fields checked
-- **Empty Value Checks**: Prevents empty submissions
-- **Text Sanitization**: Removes potentially harmful characters
-- **Regex Pattern Matching**: Validates filename patterns
+### Input Validation & Sanitization
+- All user inputs are sanitized to prevent injection attacks
+- File type validation (PDF only)
+- File size limits (16MB maximum)
+- Filename sanitization using Werkzeug's `secure_filename()`
+- Path traversal prevention
 
-#### 4. Application Configuration
-- **Secret Key**: Configurable via environment variable
-- **Debug Mode**: Disabled by default, configurable via environment
-- **Error Handling**: Safe error messages without stack traces
-- **Host Binding**: Default to localhost only
+### Rate Limiting
+- General requests: 200/day, 50/hour
+- Upload endpoint: 10/hour
+- Login endpoint: 5/minute
+- API endpoint: 100/minute
 
-#### 5. Code Quality
-- **Error Handling**: Try-except blocks for critical operations
-- **Type Checking**: Basic validation of data types
-- **Logging**: Error messages logged to console
-- **Clean Code**: Well-structured and documented
+### Security Headers
+- `X-Content-Type-Options: nosniff`
+- `X-Frame-Options: DENY`
+- `X-XSS-Protection: 1; mode=block`
+- `Strict-Transport-Security: max-age=31536000; includeSubDomains`
+- Content Security Policy (CSP)
 
-### ⚠️ Security Issues / Missing Features
+### File Upload Security
+- PDF-only validation
+- File size enforcement
+- Duplicate file detection
+- Metadata sanitization
+- Error handling with cleanup
 
-#### Critical (Must Fix for Production)
-1. **No Authentication System**
-   - `/admin` endpoint is publicly accessible
-   - Anyone can upload files
-   - No user management
-   - **Risk**: Unauthorized file uploads, abuse, storage exhaustion
+### Environment Security
+- Debug mode disabled by default
+- Secret key from environment variables
+- Sensitive configuration in `.env` (not committed)
+- `.gitignore` prevents sensitive file commits
 
-2. **No Rate Limiting**
-   - No protection against brute force
-   - No upload rate limits
-   - **Risk**: DoS attacks, resource exhaustion
+## Reporting a Vulnerability
 
-3. **No CAPTCHA**
-   - Upload form has no bot protection
-   - **Risk**: Automated spam uploads
+If you discover a security vulnerability in this project, please follow these steps:
 
-#### High Priority
-4. **No File Scanning**
-   - PDFs not scanned for malware
-   - No virus scanning
-   - **Risk**: Malicious file hosting
+1. **DO NOT** create a public GitHub issue
+2. Email the maintainer directly at: [your-email@example.com]
+3. Include:
+   - Description of the vulnerability
+   - Steps to reproduce
+   - Potential impact
+   - Suggested fix (if available)
 
-5. **No Database**
-   - Metadata stored in filenames only
-   - No audit trail
-   - No user tracking
-   - **Risk**: Limited accountability
+### What to Expect
 
-6. **File Permissions**
-   - No checks on file permissions
-   - **Risk**: Unauthorized file access
+- **Initial Response**: Within 48 hours
+- **Status Update**: Within 7 days
+- **Fix Timeline**: Depends on severity
+  - Critical: 1-3 days
+  - High: 1-2 weeks
+  - Medium: 2-4 weeks
+  - Low: Next release
 
-7. **No HTTPS Enforcement**
-   - Application doesn't enforce HTTPS
-   - **Risk**: Man-in-the-middle attacks
+### Security Update Process
 
-#### Medium Priority
-8. **Session Management**
-   - Basic session handling only
-   - No session timeout
-   - **Risk**: Session hijacking
+1. Vulnerability confirmed
+2. Fix developed and tested
+3. Security advisory published
+4. Update released
+5. Users notified
 
-9. **Input Length Limits**
-   - Some fields lack length validation
-   - **Risk**: Buffer overflow attempts
+## Security Best Practices for Deployment
 
-10. **CORS Configuration**
-    - No CORS policy defined
-    - **Risk**: Unwanted cross-origin requests
+### Production Deployment Checklist
 
-#### Low Priority
-11. **Logging and Monitoring**
-    - Basic console logging only
-    - No structured logging
-    - No security event monitoring
-    - **Risk**: Security incidents go unnoticed
+- [ ] Use HTTPS/SSL certificates
+- [ ] Set strong `SECRET_KEY` in environment variables
+- [ ] Set strong `ADMIN_PASSWORD` in environment variables
+- [ ] Set `DEBUG=False` in production
+- [ ] Use a production WSGI server (not Flask development server)
+- [ ] Configure firewall rules
+- [ ] Enable HTTPS-only cookies
+- [ ] Regular security updates for dependencies
+- [ ] Monitor logs for suspicious activity
+- [ ] Regular backups of uploads directory
+- [ ] Consider using a reverse proxy (nginx/Apache)
+- [ ] Implement IP whitelisting for admin endpoints (optional)
 
-12. **API Documentation**
-    - No API rate limiting
-    - No API versioning
-    - **Risk**: API abuse
+### Recommended Production Setup
 
-## Attack Vectors & Mitigations
+```bash
+# Install production dependencies
+pip install gunicorn
 
-### 1. File Upload Attacks
-**Potential Attacks:**
-- Malicious PDF uploads
-- Executable files disguised as PDFs
-- ZIP bombs
-- Large file DoS
+# Set environment variables
+export SECRET_KEY="your-very-long-random-secret-key"
+export ADMIN_PASSWORD="your-strong-password"
+export DEBUG=False
+export FLASK_ENV=production
 
-**Current Mitigations:**
-- ✅ File extension validation
-- ✅ File size limits
-- ✅ Secure filename handling
-- ❌ No malware scanning
-- ❌ No content validation
+# Run with Gunicorn
+gunicorn -w 4 -b 127.0.0.1:8000 app:app
+```
 
-**Recommendation**: Add ClamAV or similar for virus scanning
+### Using a Reverse Proxy (nginx example)
 
-### 2. Injection Attacks
-**Potential Attacks:**
-- SQL Injection (if database added)
-- Path Traversal
-- Command Injection
+```nginx
+server {
+    listen 80;
+    server_name yourdomain.com;
+    return 301 https://$server_name$request_uri;
+}
 
-**Current Mitigations:**
-- ✅ Input sanitization
-- ✅ Path traversal checks
-- ✅ Secure filename generation
-- ✅ No direct database queries (filesystem only)
+server {
+    listen 443 ssl http2;
+    server_name yourdomain.com;
 
-**Recommendation**: Continue sanitization when database is added
+    ssl_certificate /path/to/cert.pem;
+    ssl_certificate_key /path/to/key.pem;
 
-### 3. Cross-Site Scripting (XSS)
-**Potential Attacks:**
-- Stored XSS via uploaded metadata
-- Reflected XSS via search
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
 
-**Current Mitigations:**
-- ✅ Content Security Policy
-- ✅ X-XSS-Protection header
-- ✅ Input sanitization
-- ⚠️ Basic frontend sanitization only
+## Known Limitations
 
-**Recommendation**: Use templating engine escaping, validate on frontend
+### Current Security Considerations
 
-### 4. Denial of Service (DoS)
-**Potential Attacks:**
-- Large file uploads
-- Rapid repeated uploads
-- Storage exhaustion
+1. **Single Admin Account**: Only one admin password supported
+2. **No 2FA**: Two-factor authentication not implemented
+3. **No Audit Logging**: Security events not logged to files
+4. **File System Storage**: Uses local file system instead of secure cloud storage
+5. **Client-side Search**: Search performed in browser (all data exposed)
+6. **No Session Timeout**: Sessions don't automatically expire
+7. **Basic Rate Limiting**: Uses in-memory storage (resets on restart)
 
-**Current Mitigations:**
-- ✅ File size limits
-- ❌ No rate limiting
-- ❌ No storage quotas
+### Recommendations for Enhanced Security
 
-**Recommendation**: Implement Flask-Limiter
+For production deployments with sensitive data:
 
-### 5. Authentication Bypass
-**Potential Attacks:**
-- Direct URL access to admin
-- Session hijacking
+1. Implement proper user management system
+2. Add two-factor authentication (TOTP)
+3. Use database instead of file system
+4. Implement comprehensive audit logging
+5. Add session timeout and idle detection
+6. Use Redis/Memcached for persistent rate limiting
+7. Implement CAPTCHA on login
+8. Add brute force protection
+9. Regular security audits
+10. Penetration testing
 
-**Current Mitigations:**
-- ❌ No authentication system
-- ❌ No session timeout
-- ❌ No access control
+## Security Dependencies
 
-**Recommendation**: Implement Flask-Login or OAuth
+This project uses the following security-focused dependencies:
 
-## Compliance & Best Practices
+- **Flask**: Web framework with built-in security features
+- **Werkzeug**: Security utilities (password hashing, secure filename)
+- **Flask-Limiter**: Rate limiting protection
+- **python-dotenv**: Environment variable management
 
-### OWASP Top 10 Coverage
+### Keeping Dependencies Updated
 
-1. **A01:2021 - Broken Access Control**: ❌ No authentication
-2. **A02:2021 - Cryptographic Failures**: ⚠️ Basic secret key
-3. **A03:2021 - Injection**: ✅ Good sanitization
-4. **A04:2021 - Insecure Design**: ⚠️ Missing security features
-5. **A05:2021 - Security Misconfiguration**: ⚠️ Debug mode configurable
-6. **A06:2021 - Vulnerable Components**: ✅ Updated dependencies
-7. **A07:2021 - Authentication Failures**: ❌ No authentication
-8. **A08:2021 - Data Integrity Failures**: ⚠️ No file validation
-9. **A09:2021 - Logging Failures**: ⚠️ Basic logging only
-10. **A10:2021 - SSRF**: ✅ No external requests
+```bash
+# Check for outdated packages
+pip list --outdated
 
-## Recommendations for Production
+# Update all packages
+pip install --upgrade -r requirements.txt
 
-### Immediate Actions Required
-1. **Add Authentication**
-   ```bash
-   pip install Flask-Login
-   ```
-   - Implement user registration/login
-   - Protect admin routes
-   - Add session management
+# Check for security vulnerabilities
+pip install safety
+safety check
+```
 
-2. **Add Rate Limiting**
-   ```bash
-   pip install Flask-Limiter
-   ```
-   - Limit uploads per IP
-   - Limit API requests
-   - Add CAPTCHA
+## Security Disclosure Policy
 
-3. **Enable HTTPS**
-   - Get SSL certificate (Let's Encrypt)
-   - Force HTTPS redirect
-   - Update CSP for HTTPS
+We take security seriously and appreciate responsible disclosure of vulnerabilities. We commit to:
 
-4. **Add File Scanning**
-   ```bash
-   apt-get install clamav
-   pip install clamd
-   ```
+1. Acknowledging receipt of vulnerability reports
+2. Providing regular updates on fix progress
+3. Crediting reporters (unless anonymity requested)
+4. Maintaining confidentiality until fix is released
 
-5. **Implement Database**
-   ```bash
-   pip install Flask-SQLAlchemy
-   ```
-   - Store metadata properly
-   - Add user management
-   - Enable audit logging
+## Contact
 
-### Configuration Checklist
-- [ ] Set strong SECRET_KEY (32+ random bytes)
-- [ ] Disable debug mode
-- [ ] Use production WSGI server (Gunicorn)
-- [ ] Configure reverse proxy (Nginx)
-- [ ] Set up SSL/TLS
-- [ ] Enable firewall
-- [ ] Configure security groups
-- [ ] Set file permissions correctly
-- [ ] Enable application logging
-- [ ] Set up monitoring (Sentry, Datadog)
-- [ ] Implement backup system
-- [ ] Add database encryption
-- [ ] Regular dependency updates
-- [ ] Security penetration testing
+For security concerns, contact:
+- GitHub: [@anacondy](https://github.com/anacondy)
+- Create a private security advisory on GitHub
 
-## Testing Performed
+---
 
-### Security Tests
-- ✅ File upload with various extensions
-- ✅ Path traversal attempts
-- ✅ Large file uploads (blocked correctly)
-- ✅ Empty field submissions
-- ✅ Special characters in inputs
-- ✅ Direct URL access to endpoints
-
-### Not Tested (Requires Additional Tools)
-- ❌ Penetration testing
-- ❌ Load testing
-- ❌ SQL injection (no database yet)
-- ❌ Session hijacking
-- ❌ CSRF attacks
-- ❌ XSS attacks
-
-## Conclusion
-
-This application has **good foundational security** for a development project but is **NOT production-ready**. 
-
-**Safe for:**
-- Local development
-- Personal testing
-- Learning purposes
-- Private networks
-
-**NOT safe for:**
-- Public internet without modifications
-- Production use without authentication
-- Handling sensitive data
-- High-traffic environments
-
-**Overall Security Score: 7/10**
-- Code Quality: 8/10
-- Input Validation: 8/10
-- Authentication: 0/10
-- Authorization: 0/10
-- Error Handling: 7/10
-- Configuration: 7/10
-- Monitoring: 4/10
-- Documentation: 9/10
-
-## Resources
-
-- [OWASP Top 10](https://owasp.org/www-project-top-ten/)
-- [Flask Security Guide](https://flask.palletsprojects.com/en/latest/security/)
-- [Python Security Best Practices](https://python.readthedocs.io/en/stable/library/security_warnings.html)
-- [Web Security Testing Guide](https://owasp.org/www-project-web-security-testing-guide/)
+**Last Updated**: 2025-10-14

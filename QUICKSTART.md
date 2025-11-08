@@ -1,213 +1,198 @@
 # Quick Start Guide
 
-Get the Papers Archive app running in under 5 minutes!
+Get up and running with Terminal Archives in 5 minutes!
 
 ## Prerequisites
-
-- Python 3.8 or higher
+- Python 3.8+ installed
 - pip (Python package manager)
 - Git (optional, for cloning)
 
 ## Installation Steps
 
 ### 1. Get the Code
-
-**Option A: Clone from GitHub**
 ```bash
+# Option A: Clone with Git
 git clone https://github.com/anacondy/papers-gemini-archive-4-.git
 cd papers-gemini-archive-4-
+
+# Option B: Download ZIP
+# Download from GitHub and extract
+# cd into the extracted folder
 ```
 
-**Option B: Download ZIP**
-- Download from GitHub
-- Extract to a folder
-- Open terminal in that folder
-
 ### 2. Install Dependencies
-
 ```bash
 pip install -r requirements.txt
 ```
 
-This installs:
-- Flask 3.0.0 (web framework)
-- Werkzeug 3.0.1 (WSGI utilities)
-- PyPDF2 3.0.1 (PDF processing)
+### 3. Configure Environment
+```bash
+# Copy the example environment file
+cp .env.example .env
 
-### 3. Run the Application
+# Edit .env and set your admin password
+# On Linux/Mac:
+nano .env
+# Or use any text editor
 
+# Set these values:
+SECRET_KEY=your-very-long-random-secret-key-change-this
+ADMIN_PASSWORD=your-strong-password-here
+DEBUG=False
+```
+
+**Generate a secure SECRET_KEY**:
+```bash
+python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+### 4. Run the Application
 ```bash
 python app.py
 ```
 
-You should see:
-```
-* Running on http://127.0.0.1:5000
-```
+### 5. Access the Application
+Open your browser and navigate to:
+- **Main Page**: http://localhost:5000
+- **Admin Login**: http://localhost:5000/admin/login
 
-### 4. Open in Browser
+## First Time Setup
 
-Navigate to: `http://127.0.0.1:5000`
+### Upload Your First Paper
 
-## Using the Application
-
-### Search for Papers (Students)
-
-**Desktop:**
-1. Press `Ctrl + K` to open search
-2. Type your query (e.g., "Physics 2024")
-3. Press Enter
-4. Click results to view/download
-
-**Mobile:**
-1. Use the search bar at the bottom
-2. Type your query
-3. Tap results to open
-
-**Search Tips:**
-- Search by subject: "Physics", "Chemistry"
-- Search by year: "2024", "2023"
-- Search by class: "BSc", "BCA"
-- Combine terms: "BSc Physics 2024"
-
-### Upload Papers (Admin)
-
-1. Go to `http://127.0.0.1:5000/admin`
-2. Fill in all required fields:
+1. Go to http://localhost:5000/admin/login
+2. Enter the admin password you set in `.env`
+3. Fill in the paper details:
    - Your name
-   - Class (BSc, BCA, etc.)
-   - Subject
-   - Semester (1-6)
-   - Year (2024, 2023, etc.)
-   - Exam Type
-   - Medium (English/Hindi/Hinglish)
-3. Optional: Add time and max marks
-4. Select PDF file
+   - Class (e.g., BSc)
+   - Subject (e.g., Physics)
+   - Semester
+   - Year
+   - Exam type
+   - Medium
+4. Upload a PDF file (max 16MB)
 5. Click "Upload Paper"
 
-**Quick Access:** Type "upload" in the search box
+### Search for Papers
 
-## Configuration (Optional)
+**Desktop**:
+- Press `Ctrl+K` to open search
+- Type your query (e.g., "Physics 2024")
+- Press Enter
 
-### Change Secret Key
+**Mobile**:
+- Use the search bar at the bottom
+- Type and press Enter
 
-```bash
-export SECRET_KEY="your-secret-random-key-here"
-```
+## Common Issues & Solutions
 
-### Enable Debug Mode (Development Only)
-
-```bash
-export FLASK_DEBUG=True
-```
-
-**⚠️ NEVER enable debug in production!**
-
-### Change Port
-
-Edit `app.py`, line 174:
-```python
-app.run(debug=debug_mode, host='127.0.0.1', port=YOUR_PORT)
-```
-
-## Troubleshooting
-
-### "Command not found: python"
-
-Try `python3` instead:
-```bash
-python3 app.py
-```
-
-### "No module named 'flask'"
-
-Dependencies not installed. Run:
+### "Module not found" error
 ```bash
 pip install -r requirements.txt
 ```
 
-If using Python 3:
+### "Permission denied" when uploading
 ```bash
-pip3 install -r requirements.txt
-```
-
-### "Address already in use"
-
-Port 5000 is busy. Either:
-- Stop the other application using port 5000
-- Change the port in `app.py`
-
-### "Permission denied" on uploads
-
-Check folder permissions:
-```bash
+# Linux/Mac
 chmod 755 uploads/
+
+# Windows: Run as administrator
 ```
 
-### No papers showing up
-
-1. Upload at least one paper via `/admin`
-2. Check uploads folder has files
-3. Check browser console for errors (F12)
-
-## Testing the Application
-
-### Test Search Functionality
-
-1. Upload a test PDF via admin
-2. Search for it using any metadata
-3. Verify it appears in results
-4. Click to download/view
-
-### Test Upload Validation
-
-Try uploading:
-- ❌ Non-PDF file (should reject)
-- ❌ File > 10MB (should reject)
-- ❌ Empty form (should reject)
-- ✅ Valid PDF with all fields (should accept)
-
-## Stopping the Application
-
-Press `Ctrl + C` in the terminal
-
-## Next Steps
-
-- Read [README.md](README.md) for full documentation
-- Check [SECURITY.md](SECURITY.md) for security info
-- See [DEPLOYMENT.md](DEPLOYMENT.md) for hosting options
-- Review [ANALYSIS.md](ANALYSIS.md) for detailed assessment
-
-## Need Help?
-
-1. Check the documentation files
-2. Look for error messages in terminal
-3. Open browser console (F12) for frontend errors
-4. Check `uploads/` folder exists and is writable
-
-## Development Mode
-
-For development with auto-reload:
-
-```bash
-export FLASK_DEBUG=True
-flask run
+### Port 5000 already in use
+Change the port in `app.py`:
+```python
+app.run(debug=debug_mode, host='127.0.0.1', port=5001)
 ```
 
-Changes to Python files will auto-restart the server.
+### Can't access from other devices
+Change the host:
+```python
+app.run(debug=debug_mode, host='0.0.0.0', port=5000)
+```
+Then access via: `http://YOUR_IP:5000`
 
 ## Production Deployment
 
-**DO NOT** use `python app.py` in production!
-
-Use a production server:
+### Quick Production Setup
 ```bash
+# Install Gunicorn
 pip install gunicorn
-gunicorn app:app
+
+# Set environment variables
+export SECRET_KEY="your-secret-key"
+export ADMIN_PASSWORD="your-password"
+export DEBUG=False
+export FLASK_ENV=production
+
+# Run with Gunicorn (4 workers)
+gunicorn -w 4 -b 0.0.0.0:8000 app:app
 ```
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for full production setup.
+### Using systemd (Linux)
+Create `/etc/systemd/system/papers-archive.service`:
+```ini
+[Unit]
+Description=Terminal Archives
+After=network.target
+
+[Service]
+User=www-data
+WorkingDirectory=/path/to/papers-gemini-archive-4-
+Environment="PATH=/path/to/venv/bin"
+EnvironmentFile=/path/to/papers-gemini-archive-4-/.env
+ExecStart=/path/to/venv/bin/gunicorn -w 4 -b 127.0.0.1:8000 app:app
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable and start:
+```bash
+sudo systemctl enable papers-archive
+sudo systemctl start papers-archive
+```
+
+## Tips & Tricks
+
+### Keyboard Shortcuts
+- `Ctrl+K`: Open search (desktop)
+- Type `upload` in search: Quick admin access
+
+### Backup Your Data
+```bash
+# Backup uploaded files
+tar -czf backup-$(date +%Y%m%d).tar.gz uploads/
+
+# Or use rsync
+rsync -av uploads/ /path/to/backup/
+```
+
+### Update Dependencies
+```bash
+pip install --upgrade -r requirements.txt
+```
+
+### Check for Security Issues
+```bash
+pip install safety
+safety check
+```
+
+## Next Steps
+
+- 📖 Read the full [README.md](README.md)
+- 🔒 Review [SECURITY.md](SECURITY.md)
+- 📊 Check [SECURITY_AUDIT_REPORT.md](SECURITY_AUDIT_REPORT.md)
+- 🎨 Customize the theme in `static/style.css`
+- 📝 Add more subjects in `templates/upload.html`
+
+## Need Help?
+
+- Check the [README](README.md) for detailed documentation
+- Open an issue on GitHub
+- Review the [SECURITY_AUDIT_REPORT.md](SECURITY_AUDIT_REPORT.md)
 
 ---
 
-**Enjoy using Papers Archive! 📚**
+Made with ❤️ by Anuj Meena

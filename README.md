@@ -1,227 +1,244 @@
-# 📚 Papers Archive - Previous Year Exam Papers Repository
+# 📚 Terminal Archives - Previous Year Papers Repository
 
-A secure Flask-based web application for archiving and searching previous year exam papers with a terminal-style user interface.
+A secure, terminal-themed web application for archiving and searching previous year exam papers. Built with Flask and designed with a retro terminal aesthetic.
 
-## 🎯 Project Overview
+![License](https://img.shields.io/badge/license-MIT-green)
+![Python](https://img.shields.io/badge/python-3.8+-blue)
+![Flask](https://img.shields.io/badge/flask-3.0.0-lightgrey)
 
-This application provides a searchable archive of exam papers (PDFs) with metadata management. It features:
-- **Terminal-style UI** for a unique user experience
-- **Advanced search** by class, subject, year, semester, exam type, and medium
-- **PDF metadata management** - automatically adds metadata to uploaded papers
-- **Mobile responsive** design with touch-friendly search
-- **Secure file upload** system with comprehensive validation
+> 📖 **[Read the Complete Wiki](WIKI.md)** for comprehensive documentation, advanced usage, API documentation, troubleshooting, and more!
 
-## 🔒 Security Features
+## 🎯 Project Purpose
 
-This application implements multiple security layers:
+This application provides a centralized platform for students to:
+- **Search** through a database of previous year exam papers
+- **Access** papers by class, subject, semester, year, exam type, and medium
+- **Upload** new papers (admin only, with authentication)
+- **Browse** papers with a unique terminal-style interface
 
-### ✅ Implemented Security Measures
-- **File Upload Security**
-  - File size limit (10MB max)
-  - File type validation (PDF only)
-  - Filename sanitization and path traversal prevention
-  - Secure filename generation
-  
-- **Security Headers**
-  - Content Security Policy (CSP)
-  - X-Frame-Options (clickjacking protection)
-  - X-Content-Type-Options (MIME sniffing protection)
-  - X-XSS-Protection
-  - Strict-Transport-Security (HSTS)
+## ✨ Features
 
-- **Input Validation**
-  - All user inputs are sanitized
-  - Required field validation
-  - Empty value checks
+### Security Features (Rating: 8/10)
+- ✅ **Authentication**: Password-protected admin access
+- ✅ **Rate Limiting**: Protects against brute force and DDoS attacks
+- ✅ **File Validation**: Strict PDF-only upload with size limits (16MB)
+- ✅ **Path Sanitization**: Prevents directory traversal attacks
+- ✅ **Security Headers**: CSP, X-Frame-Options, X-XSS-Protection, HSTS
+- ✅ **Session Security**: HTTPOnly, Secure, SameSite cookies
+- ✅ **Input Sanitization**: All user inputs are sanitized
+- ✅ **Error Handling**: Custom error pages prevent information leakage
 
-- **Application Security**
-  - Secret key for session management
-  - Debug mode disabled by default
-  - Error handling with safe error messages
+### User Experience (Rating: 9/10)
+- 🖥️ **Terminal UI**: Unique retro terminal interface
+- 📱 **Mobile Responsive**: Adapts to mobile and desktop devices
+- 🔍 **Fast Search**: Real-time client-side search
+- ⌨️ **Keyboard Shortcuts**: Ctrl+K for quick search on desktop
+- 🎨 **Clean Design**: Dark theme with green accents
 
-### ⚠️ Important Security Notes
+### Technical Stack (Rating: 8/10)
+- **Backend**: Flask 3.0.0 (Python)
+- **Frontend**: Vanilla JavaScript (no frameworks)
+- **PDF Processing**: PyPDF2
+- **Security**: Flask-Limiter, Werkzeug security utilities
+- **Styling**: Pure CSS with Google Fonts (Fira Code)
 
-**This application is NOT suitable for GitHub Pages deployment** because:
-1. GitHub Pages only serves static files (HTML, CSS, JS)
-2. This is a Flask application requiring a Python backend server
-3. File upload functionality requires server-side processing
-4. Database operations need a running application server
+## 🚀 Setup Instructions
 
-**Authentication/Authorization**: This application currently does NOT have:
-- User authentication for the upload endpoint
-- Admin access control
-- User management system
-
-**For production use, you MUST add:**
-- Proper authentication system (Flask-Login, OAuth, etc.)
-- Role-based access control
-- Rate limiting for API endpoints
-- HTTPS/SSL certificate
-- Database for paper metadata (currently uses filesystem)
-- Regular security audits and updates
-
-## 📋 Requirements
-
+### Prerequisites
 - Python 3.8 or higher
 - pip (Python package manager)
 
-## 🚀 Installation & Setup
+### Installation
 
-### 1. Clone the Repository
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/anacondy/papers-gemini-archive-4-.git
+   cd papers-gemini-archive-4-
+   ```
 
-```bash
-git clone https://github.com/anacondy/papers-gemini-archive-4-.git
-cd papers-gemini-archive-4-
+2. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Configure environment variables**
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Edit `.env` and set:
+   - `SECRET_KEY`: A strong random secret key
+   - `ADMIN_PASSWORD`: Your admin password
+   - `DEBUG`: Set to `False` for production
+
+4. **Run the application**
+   ```bash
+   python app.py
+   ```
+
+5. **Access the application**
+   - Main interface: `http://localhost:5000`
+   - Admin login: `http://localhost:5000/admin/login`
+
+## 📖 Usage Guide
+
+### For Students (Searching Papers)
+
+1. **Desktop**: Press `Ctrl+K` to open search modal
+2. **Mobile**: Use the search bar at the bottom
+3. Type your query (e.g., "Physics 2024", "BSc Semester I")
+4. Click on results to download papers
+
+### For Admins (Uploading Papers)
+
+1. Navigate to `/admin/login`
+2. Enter your admin password
+3. Fill in the paper details:
+   - Your name
+   - Class (BA, BSc, etc.)
+   - Subject
+   - Semester
+   - Exam year
+   - Exam type
+   - Medium (English/Hindi/Hinglish)
+   - Time and marks (optional)
+4. Upload PDF file (max 16MB)
+5. Paper metadata is automatically embedded in the PDF
+
+### Admin Shortcut
+Type `upload` in the search box to quickly access admin login (you'll be prompted for your name).
+
+## 🔒 Security Best Practices
+
+### For Deployment
+
+1. **Use HTTPS**: Always deploy with SSL/TLS certificates
+2. **Strong Passwords**: Use a strong, random admin password
+3. **Environment Variables**: Never commit `.env` file to git
+4. **Regular Updates**: Keep dependencies updated
+5. **Backup**: Regularly backup the `uploads/` directory
+6. **Monitoring**: Monitor logs for suspicious activity
+
+### Default Security Settings
+
+- File size limit: 16MB
+- Rate limits: 
+  - General: 200 requests/day, 50/hour
+  - Upload: 10 requests/hour
+  - Login: 5 attempts/minute
+  - API: 100 requests/minute
+
+## 📁 Project Structure
+
+```
+papers-gemini-archive-4-/
+├── app.py                  # Main Flask application
+├── requirements.txt        # Python dependencies
+├── .env.example           # Environment variables template
+├── .gitignore            # Git ignore rules
+├── LICENSE               # MIT License
+├── README.md             # This file
+├── static/               # Static assets
+│   ├── script.js        # Frontend JavaScript
+│   └── style.css        # Styles
+├── templates/           # HTML templates
+│   ├── index.html      # Main terminal interface
+│   ├── upload.html     # Admin upload form
+│   └── login.html      # Admin login page
+└── uploads/            # PDF storage (not in git)
 ```
 
-### 2. Create Virtual Environment (Recommended)
+## 🎨 Customization
 
-```bash
-# On Linux/Mac
-python3 -m venv venv
-source venv/bin/activate
-
-# On Windows
-python -m venv venv
-venv\Scripts\activate
+### Changing the Theme
+Edit `style.css` variables:
+```css
+:root {
+    --primary-color: #4CAF50;  /* Main accent color */
+    --bg-color: #1a1a1a;       /* Background */
+    --text-color: #e0e0e0;     /* Text color */
+}
 ```
 
-### 3. Install Dependencies
+### Adding More Subjects/Classes
+Edit the dropdown options in `templates/upload.html`.
 
+## 🐛 Troubleshooting
+
+### "Module not found" errors
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Set Environment Variables (Optional)
-
+### "Permission denied" on uploads
 ```bash
-# On Linux/Mac
-export SECRET_KEY="your-secret-key-here"
-export FLASK_DEBUG=False
-
-# On Windows
-set SECRET_KEY=your-secret-key-here
-set FLASK_DEBUG=False
+chmod 755 uploads/
 ```
 
-### 5. Run the Application
+### Rate limit errors
+Adjust limits in `app.py` or wait for the cooldown period.
 
-```bash
-python app.py
-```
+## 📊 Project Ratings
 
-The application will be available at `http://127.0.0.1:5000`
+| Category | Rating | Notes |
+|----------|--------|-------|
+| **Security** | 8/10 | Strong security measures, could add 2FA |
+| **Setup Ease** | 9/10 | Simple pip install and run |
+| **Code Quality** | 8/10 | Clean, well-structured, documented |
+| **UI/UX** | 9/10 | Unique terminal theme, responsive |
+| **Innovation** | 7/10 | Creative UI approach, standard backend |
+| **Documentation** | 9/10 | Comprehensive README and comments |
+| **Maintainability** | 8/10 | Modular code, easy to extend |
 
-## 📖 Usage
+**Overall Score**: 8.3/10
 
-### For Students/Users
+## 🚧 Known Limitations
 
-1. Open the application in your browser
-2. Use the search interface:
-   - **Desktop**: Press `Ctrl + K` to open search modal
-   - **Mobile**: Use the search bar at the bottom of the screen
-3. Search by any combination of:
-   - Class (BA, BSc, BCA, etc.)
-   - Subject (Physics, Chemistry, Maths, etc.)
-   - Year (2024, 2023, etc.)
-   - Semester (1-6)
-   - Exam Type (Main Semester, CIA, etc.)
-   - Medium (English, Hindi, Hinglish)
-4. Click on search results to download/view papers
+- Single admin account (no multi-user support)
+- No database (uses file system)
+- No paper preview functionality
+- No bulk upload feature
+- Client-side search only (no advanced queries)
 
-### For Administrators
+## 🔮 Future Enhancements
 
-1. Navigate to `/admin` endpoint
-2. Fill in the upload form with paper details:
-   - Your name (uploader)
-   - Class, Subject, Semester
-   - Exam year and type
-   - Medium of instruction
-   - Time and max marks (optional)
-3. Select PDF file
-4. Click "Upload Paper"
-
-### Special Commands
-
-- Type `upload` in the search box for quick access to admin panel
-
-## 🏗️ Project Structure
-
-```
-papers-gemini-archive-4-/
-├── app.py              # Main Flask application
-├── requirements.txt    # Python dependencies
-├── .gitignore         # Git ignore rules
-├── LICENSE            # MIT License
-├── README.md          # This file
-├── templates/         # HTML templates
-│   ├── index.html     # Main terminal UI
-│   └── upload.html    # Upload form
-├── static/            # Static assets
-│   ├── style.css      # Stylesheet
-│   └── script.js      # Frontend JavaScript
-└── uploads/           # Uploaded PDF storage
-    └── .gitkeep       # Keep directory in git
-```
-
-## 🔧 Configuration
-
-### File Upload Limits
-
-Edit in `app.py`:
-```python
-MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
-```
-
-### Allowed File Types
-
-Edit in `app.py`:
-```python
-ALLOWED_EXTENSIONS = {'pdf'}  # Add more if needed
-```
-
-## 🐛 Troubleshooting
-
-### Application won't start
-- Ensure Python 3.8+ is installed: `python --version`
-- Check all dependencies are installed: `pip list`
-- Verify you're in the correct directory
-- Check if port 5000 is already in use
-
-### Upload not working
-- Verify file is a PDF
-- Check file size is under 10MB
-- Ensure all required fields are filled
-- Check uploads directory exists and is writable
-
-### Search returns no results
-- Ensure papers are uploaded with correct metadata
-- Check uploads folder has PDF files
-- Verify filename format matches pattern
-
-## 🛡️ Security Checklist for Production
-
-- [ ] Set strong SECRET_KEY environment variable
-- [ ] Disable debug mode (FLASK_DEBUG=False)
-- [ ] Add authentication for /admin and /upload routes
-- [ ] Implement rate limiting
-- [ ] Set up HTTPS with valid SSL certificate
-- [ ] Use production WSGI server (Gunicorn, uWSGI)
-- [ ] Implement logging and monitoring
-- [ ] Regular security updates for dependencies
-- [ ] Add CAPTCHA for upload form
-- [ ] Implement file scanning for malware
-- [ ] Set up database for metadata (PostgreSQL/MySQL)
-- [ ] Add backup system for uploaded files
+- [ ] Multi-user admin support with roles
+- [ ] PostgreSQL/SQLite database integration
+- [ ] PDF preview in browser
+- [ ] Bulk upload functionality
+- [ ] Advanced search filters
+- [ ] Paper analytics and download tracking
+- [ ] Email notifications for new uploads
+- [ ] Tags and categories
+- [ ] Two-factor authentication
 
 ## 🤝 Contributing
 
 Contributions are welcome! Please:
 1. Fork the repository
 2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
+
+## 🚀 Deployment
+
+### GitHub Pages (Demo/Documentation)
+
+This repository includes a static demo page in the `/docs` folder. To enable GitHub Pages:
+
+1. Go to repository **Settings** → **Pages**
+2. Under **Source**, select:
+   - Branch: `main`
+   - Folder: `/docs`
+3. Click **Save**
+4. The demo will be available at: `https://anacondy.github.io/papers-gemini-archive-4-/`
+
+**Note**: GitHub Pages only hosts the static demo page. For the full Flask application, deploy to a platform that supports Python:
+- **Heroku**: Easy deployment with Git push
+- **PythonAnywhere**: Free tier available for Python apps
+- **AWS/DigitalOcean**: Full control with VPS hosting
+- **Render/Railway**: Modern deployment platforms
 
 ## 📄 License
 
@@ -230,47 +247,43 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👤 Author
 
 **Anuj Meena**
+- GitHub: [@anacondy](https://github.com/anacondy)
 
 ## 🙏 Acknowledgments
 
-- Terminal UI inspired by classic terminal interfaces
-- Flask framework for Python web applications
-- PyPDF2 for PDF manipulation
-
-## 📊 Repository Stats
-
-**Security Rating**: 7/10
-- ✅ Input validation
-- ✅ File upload security
-- ✅ Security headers
-- ✅ Error handling
-- ⚠️ No authentication system
-- ⚠️ No rate limiting
-- ⚠️ Debug mode configurable
-
-**Setup Difficulty**: 3/10 (Easy)
-- Simple requirements
-- Clear documentation
-- No complex dependencies
-
-**Code Quality**: 8/10
-- Well-structured Flask app
-- Proper error handling
-- Secure coding practices
-- Good separation of concerns
-
-**UI/UX**: 8/10
-- Unique terminal aesthetic
-- Mobile responsive
-- Intuitive search
-- Clean design
-
-**Technology Stack**: 7/10
-- Modern Flask
-- Client-side rendering
-- PDF processing
-- No database (limitation)
+- Terminal UI inspired by classic Unix terminals
+- Built with Flask and modern web technologies
+- Community feedback and contributions
 
 ---
 
-**⚠️ IMPORTANT**: This application requires a server to run. It **CANNOT** be deployed on GitHub Pages, Netlify, or other static hosting services. Use platforms like Heroku, Railway, DigitalOcean, or AWS that support Python applications.
+**⚠️ Important Security Note**: This application includes basic security features suitable for small-scale deployments. For production use with sensitive data, consider additional security measures like:
+- Regular security audits
+- Professional penetration testing
+- Advanced authentication systems (OAuth, SAML)
+- Database encryption
+- Comprehensive logging and monitoring
+- Web Application Firewall (WAF)
+
+---
+
+## 📚 Documentation
+
+For more detailed information, please refer to:
+
+- **[WIKI.md](WIKI.md)** - Complete documentation including:
+  - Detailed feature explanations
+  - Architecture and technical details
+  - API documentation
+  - Advanced configuration
+  - Troubleshooting guide
+  - Best practices
+  - FAQ and more
+
+- **[QUICKSTART.md](QUICKSTART.md)** - Quick setup guide for getting started in 5 minutes
+- **[SECURITY.md](SECURITY.md)** - Security policies, best practices, and vulnerability reporting
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Guidelines for contributing to the project
+
+---
+
+Made with ❤️ for students everywhere
