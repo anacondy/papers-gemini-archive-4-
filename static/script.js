@@ -43,7 +43,13 @@ document.addEventListener('DOMContentLoaded', () => {
         line.innerHTML = text;
         line.className = `line ${className}`;
         output.appendChild(line);
-        window.scrollTo(0, document.body.scrollHeight);
+        // Smooth scroll to bottom with RAF for better performance
+        requestAnimationFrame(() => {
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
+            });
+        });
     }
 
     function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
