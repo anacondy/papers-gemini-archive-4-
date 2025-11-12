@@ -50,7 +50,7 @@ Terminal Archives is a Flask-based web application designed to help students and
 |-----------|-----------|---------|
 | **Backend** | Flask | 3.0.0 |
 | **Language** | Python | 3.8+ |
-| **PDF Processing** | PyPDF2 | 3.0.1 |
+| **PDF Processing** | pypdf | 3.17.4 |
 | **Rate Limiting** | Flask-Limiter | 3.5.0 |
 | **Security** | Werkzeug | 3.0.1 |
 | **Environment** | python-dotenv | 1.0.0 |
@@ -104,11 +104,26 @@ Terminal Archives is a Flask-based web application designed to help students and
 - **Command-Line Feel**: Search uses command-line style syntax
 - **System Messages**: Informative boot sequence and system messages
 
-#### Mobile Responsiveness
-- **Adaptive Layout**: Automatically adjusts for screen size
-- **Mobile Search Bar**: Bottom-anchored search for mobile devices
+#### Mobile Responsiveness & Device Detection
+- **Robust Device Detection**: Advanced detection system identifies:
+  - **Mobile OS**: Android, iOS (iPhone/iPad), Windows Phone
+  - **Desktop OS**: Windows, macOS, Linux, Chrome OS
+  - **Browser**: Chrome, Firefox, Safari, Edge, Internet Explorer
+  - **Device Type**: Mobile, Tablet, Desktop
+  - **Touch Support**: Detects touch-enabled devices
+  - **Screen Size**: Adapts based on viewport width
+- **Adaptive Search UI**:
+  - **Mobile Devices**: Fixed search bar at bottom of screen
+  - **Desktop**: Ctrl+K modal search overlay
+  - **Automatic Switching**: Seamlessly adapts based on device
+- **Mobile Search Bar**: Bottom-anchored search for mobile devices (Android, iOS, etc.)
 - **Touch Optimized**: Touch-friendly interface elements
-- **Desktop Search Modal**: Ctrl+K shortcut for desktop users
+- **Desktop Search Modal**: Ctrl+K shortcut for desktop users (Windows, Mac, Linux)
+- **Responsive Breakpoints**:
+  - Mobile: ≤ 767px (search bar at bottom)
+  - Tablet: 768px - 1023px (treated as mobile for search)
+  - Desktop: ≥ 1024px (Ctrl+K modal)
+  - Ultrawide: ≥ 1920px (optimized layout)
 
 #### Search Functionality
 - **Real-Time Search**: Client-side search for instant results
@@ -1101,7 +1116,24 @@ A: If they support Python and Flask, yes.
 A: Yes, it can be deployed on any platform supporting Flask.
 
 **Q: How do I deploy to production?**
-A: See [QUICKSTART.md](QUICKSTART.md) for deployment instructions.
+A: See the comprehensive [DEPLOYMENT.md](DEPLOYMENT.md) guide, which includes:
+- Detailed PythonAnywhere deployment (free tier available)
+- Heroku deployment
+- Railway.app deployment
+- DigitalOcean and AWS options
+- File structure explanation
+- Environment configuration
+- Password setup instructions
+
+**Q: How do I deploy to PythonAnywhere specifically?**
+A: The [DEPLOYMENT.md](DEPLOYMENT.md) file now includes a complete step-by-step PythonAnywhere guide covering:
+- Which files to upload
+- What each file does
+- How to set your admin password
+- Virtual environment setup
+- WSGI configuration
+- Static files configuration
+- Troubleshooting common issues
 
 **Q: Can I use a CDN?**
 A: Yes, you can serve static files from a CDN.

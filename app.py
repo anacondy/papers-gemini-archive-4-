@@ -4,7 +4,7 @@ import secrets
 from flask import Flask, request, render_template, redirect, url_for, jsonify, send_from_directory, session, abort
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash, generate_password_hash
-from PyPDF2 import PdfReader, PdfWriter
+from pypdf import PdfReader, PdfWriter
 from dotenv import load_dotenv
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
