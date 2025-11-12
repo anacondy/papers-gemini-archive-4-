@@ -91,19 +91,59 @@ This application provides a centralized platform for students to:
 
 ### For Admins (Uploading Papers)
 
-1. Navigate to `/admin/login`
-2. Enter your admin password
-3. Fill in the paper details:
-   - Your name
-   - Class (BA, BSc, etc.)
-   - Subject
-   - Semester
-   - Exam year
-   - Exam type
-   - Medium (English/Hindi/Hinglish)
-   - Time and marks (optional)
-4. Upload PDF file (max 16MB)
-5. Paper metadata is automatically embedded in the PDF
+#### Upload Page Overview
+
+The admin upload interface provides a comprehensive form for adding new exam papers to the archive.
+
+**Desktop View:**
+![Upload Page Desktop](https://github.com/user-attachments/assets/e95088c0-6e39-480b-b103-85f2915421a8)
+
+**Mobile View:**
+![Upload Page Mobile](https://github.com/user-attachments/assets/21c4df04-f685-4b22-afeb-4d222a910901)
+
+#### Upload Process
+
+1. **Navigate to `/admin/login`**
+2. **Enter your admin password**
+3. **Fill in the paper details** using the upload form:
+
+#### Required Fields (Must be filled):
+   - **Your Name**: Name of the person uploading (e.g., "Alvido")
+   - **Class**: Select from dropdown (BA, BSc, BA/BSc, BSc Hons, BBA, BCA, MCA)
+   - **Subject**: Select from 17+ subjects including Maths, Physics, Chemistry, Computer Science, etc.
+   - **Semester**: Select from I to X or "All Semesters"
+   - **Exam Year**: Enter year (e.g., 2025) or select from datalist suggestions
+   - **Exam Type**: Main Semester, CIA, Half Yearly, Class Test, or Yearly
+   - **Medium**: English Medium, Hindi Medium, or Hinglish
+   - **PDF File**: Select the exam paper PDF (max 16MB)
+
+#### Optional Fields:
+   - **Time**: Duration of exam (e.g., "3 hr") - datalist suggestions available
+   - **Max Marks**: Maximum marks (e.g., "100") - datalist suggestions available
+
+4. **Click "Upload Paper"** button
+5. Paper is saved with metadata automatically embedded in PDF properties
+
+#### Upload Page Features
+
+✅ **Form-based Upload**: Simple form interface (no drag & drop currently)
+✅ **Dropdown Selections**: Pre-populated options for classes, subjects, semesters
+✅ **Datalist Suggestions**: Smart suggestions for year, time, and marks
+✅ **File Type Validation**: Only PDF files accepted
+✅ **File Size Limit**: Maximum 16MB per file
+✅ **Duplicate Detection**: Prevents uploading same paper twice
+✅ **Metadata Embedding**: Automatic PDF metadata writing
+✅ **Mobile Responsive**: Works on all devices
+✅ **Security**: Password-protected with rate limiting (10 uploads/hour)
+
+#### Admin Configuration
+
+**Single Admin System**: The application currently supports **one admin account** configured via environment variables. This is designed for small-scale deployments where a single administrator or a shared admin password is sufficient.
+
+**To configure admin access**:
+- Set `ADMIN_PASSWORD` in your `.env` file or environment variables
+- All authorized users share this password
+- For multi-admin support, consider implementing a database-backed user system
 
 ### Admin Shortcut
 Type `upload` in the search box to quickly access admin login (you'll be prompted for your name).
