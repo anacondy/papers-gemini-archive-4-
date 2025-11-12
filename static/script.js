@@ -8,31 +8,78 @@ document.addEventListener('DOMContentLoaded', () => {
     let livePapersDB = [];
     let isMobile = false; // Flag to track device type
 
-    // --- Device Detection Logic ---
+    // --- Enhanced Device Detection Logic ---
     function detectDevice() {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-        // Basic detection for common mobile OS and devices
-        if (/android/i.test(userAgent) || /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-            isMobile = true;
+        let deviceInfo = {
+            isMobile: false,
+            isTablet: false,
+            os: 'Unknown',
+            browser: 'Unknown'
+        };
+        
+        // Detect Operating System
+        if (/android/i.test(userAgent)) {
+            deviceInfo.os = 'Android';
+            deviceInfo.isMobile = true;
+        } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+            deviceInfo.os = /iPad/.test(userAgent) ? 'iOS (iPad)' : 'iOS';
+            deviceInfo.isMobile = true;
+        } else if (/Windows Phone/i.test(userAgent)) {
+            deviceInfo.os = 'Windows Phone';
+            deviceInfo.isMobile = true;
+        } else if (/Windows NT/i.test(userAgent)) {
+            deviceInfo.os = 'Windows';
+        } else if (/Mac OS X/i.test(userAgent)) {
+            deviceInfo.os = 'macOS';
+        } else if (/Linux/i.test(userAgent)) {
+            deviceInfo.os = 'Linux';
+        } else if (/CrOS/i.test(userAgent)) {
+            deviceInfo.os = 'Chrome OS';
         }
-        // Even if user agent is not mobile, check for touch support and screen size
-        if (!isMobile && ('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0)) {
-            // Consider it mobile if touch is main input and screen is small
-            if (window.innerWidth <= 768) { // Assuming 768px is our breakpoint for mobile
-                isMobile = true;
+        
+        // Additional mobile/tablet detection based on screen size and touch
+        if (!deviceInfo.isMobile && ('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0)) {
+            const width = window.innerWidth;
+            if (width <= 768) {
+                deviceInfo.isMobile = true;
+            } else if (width <= 1024) {
+                deviceInfo.isTablet = true;
+                deviceInfo.isMobile = true; // Treat tablets as mobile for search bar
             }
         }
-
+        
+        // Detect Browser
+        if (/chrome|chromium|crios/i.test(userAgent) && !/edge|edg/i.test(userAgent)) {
+            deviceInfo.browser = 'Chrome';
+        } else if (/firefox|fxios/i.test(userAgent)) {
+            deviceInfo.browser = 'Firefox';
+        } else if (/safari/i.test(userAgent) && !/chrome|chromium|crios/i.test(userAgent)) {
+            deviceInfo.browser = 'Safari';
+        } else if (/edge|edg/i.test(userAgent)) {
+            deviceInfo.browser = 'Edge';
+        } else if (/msie|trident/i.test(userAgent)) {
+            deviceInfo.browser = 'Internet Explorer';
+        }
+        
+        // Store device info globally for potential logging
+        window.deviceInfo = deviceInfo;
+        isMobile = deviceInfo.isMobile;
+        
+        // Apply appropriate UI based on device type
         if (isMobile) {
             body.classList.add('is-mobile');
-            // Hide desktop search modal and show mobile search bar by default if JS runs first
+            // Hide desktop search modal and show mobile search bar
             searchModal.classList.add('hidden');
             document.getElementById('mobile-search-container').style.display = 'block';
         } else {
             body.classList.add('is-desktop');
-            // Hide mobile search bar on desktop by default
+            // Hide mobile search bar on desktop
             document.getElementById('mobile-search-container').style.display = 'none';
         }
+        
+        // Log device info for debugging (optional)
+        console.log('Device Detection:', deviceInfo);
     }
 
     detectDevice(); // Run detection on load

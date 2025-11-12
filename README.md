@@ -8,6 +8,8 @@ A secure, terminal-themed web application for archiving and searching previous y
 
 > 📖 **[Read the Complete Wiki](WIKI.md)** for comprehensive documentation, advanced usage, API documentation, troubleshooting, and more!
 
+> 🆕 **[Check Recent Updates](RECENT_UPDATES.md)** for the latest enhancements including enhanced device detection, upload screenshots, and comprehensive PythonAnywhere deployment guide!
+
 ## 🎯 Project Purpose
 
 This application provides a centralized platform for students to:
@@ -91,19 +93,120 @@ This application provides a centralized platform for students to:
 
 ### For Admins (Uploading Papers)
 
-1. Navigate to `/admin/login`
-2. Enter your admin password
-3. Fill in the paper details:
-   - Your name
-   - Class (BA, BSc, etc.)
-   - Subject
-   - Semester
-   - Exam year
-   - Exam type
-   - Medium (English/Hindi/Hinglish)
-   - Time and marks (optional)
-4. Upload PDF file (max 16MB)
-5. Paper metadata is automatically embedded in the PDF
+#### Upload Page Overview
+
+The admin upload interface provides a comprehensive form for adding new exam papers to the archive.
+
+**Desktop View:**
+![Upload Page Desktop](https://github.com/user-attachments/assets/e95088c0-6e39-480b-b103-85f2915421a8)
+
+**Mobile View:**
+![Upload Page Mobile](https://github.com/user-attachments/assets/21c4df04-f685-4b22-afeb-4d222a910901)
+
+#### Upload Process
+
+1. **Navigate to `/admin/login`**
+2. **Enter your admin password**
+3. **Fill in the paper details** using the upload form:
+
+#### Required Fields (Must be filled):
+
+1. **Your Name**: Text input field
+   - Example: "Alvido", "John Doe", etc.
+
+2. **Class**: Dropdown menu with options:
+   - BA
+   - BSc
+   - BA/BSc
+   - BSc Hons
+   - BBA
+   - BCA
+   - MCA
+
+3. **Subject**: Dropdown menu with 17 options:
+   - Maths
+   - Physics
+   - Chemistry
+   - Hindi
+   - English
+   - Biology
+   - Psychology
+   - Zoology
+   - Computer Science
+   - Political Science
+   - Statistics
+   - Geography
+   - Biotechnology
+   - Microbiology
+   - Environmental Science
+   - History
+   - Economics
+
+4. **Semester**: Dropdown menu with options:
+   - I (1)
+   - II (2)
+   - III (3)
+   - IV (4)
+   - V (5)
+   - VI (6)
+   - VII (7)
+   - VIII (8)
+   - IX (9)
+   - X (10)
+   - All Semesters
+
+5. **Exam Year**: Text input with datalist suggestions:
+   - Suggestions: 2025, 2024, 2023, 2022, 2021, 2020
+   - Can type custom year
+
+6. **Exam Type**: Dropdown menu with options:
+   - Main Semester
+   - CIA
+   - Half Yearly
+   - Class Test
+   - Yearly
+
+7. **Medium**: Dropdown menu with options:
+   - English Medium
+   - Hindi Medium
+   - Hinglish
+
+8. **PDF File**: File input (max 16MB)
+   - Only accepts .pdf files
+
+#### Optional Fields:
+
+1. **Time (Optional)**: Text input with datalist suggestions:
+   - Suggestions: 1 hr, 1 hr 30 min, 2 hr, 2 hr 30 min, 3 hr, 3 hr 30 min
+   - Can type custom time duration
+
+2. **Max Marks (Optional)**: Text input with datalist suggestions:
+   - Suggestions: 20, 54, 80, 100
+   - Can type custom marks value
+
+4. **Click "Upload Paper"** button
+5. Paper is saved with metadata automatically embedded in PDF properties
+
+#### Upload Page Features
+
+✅ **Form-based Upload**: Simple form interface (no drag & drop currently)
+✅ **Dropdown Selections**: Pre-populated options for classes, subjects, semesters
+✅ **Datalist Suggestions**: Smart suggestions for year, time, and marks
+✅ **File Type Validation**: Only PDF files accepted
+✅ **File Size Limit**: Maximum 16MB per file
+✅ **Duplicate Detection**: Prevents uploading same paper twice
+✅ **Metadata Embedding**: Automatic PDF metadata writing
+✅ **Mobile Responsive**: Works on all devices
+✅ **Security**: Password-protected with rate limiting (10 uploads/hour)
+
+#### Admin Configuration
+
+**Single Admin System**: The application currently supports **one admin account** configured via environment variables. This is designed for small-scale deployments where a single administrator or a shared admin password is sufficient.
+
+**To configure admin access**:
+- Set `ADMIN_PASSWORD` in your `.env` file or environment variables
+- All authorized users share this password
+- For multi-admin support, consider implementing a database-backed user system
 
 ### Admin Shortcut
 Type `upload` in the search box to quickly access admin login (you'll be prompted for your name).
