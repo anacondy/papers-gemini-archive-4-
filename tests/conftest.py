@@ -52,7 +52,7 @@ def authenticated_client(client):
 @pytest.fixture
 def sample_pdf():
     """Create a sample PDF file for testing."""
-    from PyPDF2 import PdfWriter
+    from pypdf import PdfWriter
     import io
     
     writer = PdfWriter()
