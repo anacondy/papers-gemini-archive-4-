@@ -46,19 +46,39 @@ The application now features a **robust device detection system** that automatic
 
 #### Upload Page Features Documented:
 
-**Required Fields:**
-1. Your Name (uploader identification)
-2. Class (BA, BSc, BBA, BCA, MCA, etc.)
-3. Subject (17+ subjects available)
-4. Semester (I to X, or All Semesters)
-5. Exam Year (with datalist suggestions)
-6. Exam Type (Main Semester, CIA, Half Yearly, etc.)
-7. Medium (English, Hindi, Hinglish)
-8. PDF File (max 16MB)
+**Required Fields with Dropdown Options:**
+
+1. **Your Name**: Text input
+   - Example: "Alvido", "John Doe"
+
+2. **Class**: Dropdown menu
+   - Options: BA, BSc, BA/BSc, BSc Hons, BBA, BCA, MCA
+
+3. **Subject**: Dropdown menu (17 options)
+   - Maths, Physics, Chemistry, Hindi, English, Biology, Psychology, Zoology, Computer Science, Political Science, Statistics, Geography, Biotechnology, Microbiology, Environmental Science, History, Economics
+
+4. **Semester**: Dropdown menu
+   - Options: I (1), II (2), III (3), IV (4), V (5), VI (6), VII (7), VIII (8), IX (9), X (10), All Semesters
+
+5. **Exam Year**: Text input with datalist
+   - Suggestions: 2025, 2024, 2023, 2022, 2021, 2020
+   - Can type custom year
+
+6. **Exam Type**: Dropdown menu
+   - Options: Main Semester, CIA, Half Yearly, Class Test, Yearly
+
+7. **Medium**: Dropdown menu
+   - Options: English Medium, Hindi Medium, Hinglish
+
+8. **PDF File**: File input (max 16MB)
 
 **Optional Fields:**
-1. Time (exam duration)
-2. Max Marks (total marks)
+
+1. **Time**: Text input with datalist
+   - Suggestions: 1 hr, 1 hr 30 min, 2 hr, 2 hr 30 min, 3 hr, 3 hr 30 min
+
+2. **Max Marks**: Text input with datalist
+   - Suggestions: 20, 54, 80, 100
 
 **Features:**
 - ✅ Form-based interface (no drag & drop)

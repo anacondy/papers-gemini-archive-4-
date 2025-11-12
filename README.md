@@ -110,18 +110,79 @@ The admin upload interface provides a comprehensive form for adding new exam pap
 3. **Fill in the paper details** using the upload form:
 
 #### Required Fields (Must be filled):
-   - **Your Name**: Name of the person uploading (e.g., "Alvido")
-   - **Class**: Select from dropdown (BA, BSc, BA/BSc, BSc Hons, BBA, BCA, MCA)
-   - **Subject**: Select from 17+ subjects including Maths, Physics, Chemistry, Computer Science, etc.
-   - **Semester**: Select from I to X or "All Semesters"
-   - **Exam Year**: Enter year (e.g., 2025) or select from datalist suggestions
-   - **Exam Type**: Main Semester, CIA, Half Yearly, Class Test, or Yearly
-   - **Medium**: English Medium, Hindi Medium, or Hinglish
-   - **PDF File**: Select the exam paper PDF (max 16MB)
+
+1. **Your Name**: Text input field
+   - Example: "Alvido", "John Doe", etc.
+
+2. **Class**: Dropdown menu with options:
+   - BA
+   - BSc
+   - BA/BSc
+   - BSc Hons
+   - BBA
+   - BCA
+   - MCA
+
+3. **Subject**: Dropdown menu with 17 options:
+   - Maths
+   - Physics
+   - Chemistry
+   - Hindi
+   - English
+   - Biology
+   - Psychology
+   - Zoology
+   - Computer Science
+   - Political Science
+   - Statistics
+   - Geography
+   - Biotechnology
+   - Microbiology
+   - Environmental Science
+   - History
+   - Economics
+
+4. **Semester**: Dropdown menu with options:
+   - I (1)
+   - II (2)
+   - III (3)
+   - IV (4)
+   - V (5)
+   - VI (6)
+   - VII (7)
+   - VIII (8)
+   - IX (9)
+   - X (10)
+   - All Semesters
+
+5. **Exam Year**: Text input with datalist suggestions:
+   - Suggestions: 2025, 2024, 2023, 2022, 2021, 2020
+   - Can type custom year
+
+6. **Exam Type**: Dropdown menu with options:
+   - Main Semester
+   - CIA
+   - Half Yearly
+   - Class Test
+   - Yearly
+
+7. **Medium**: Dropdown menu with options:
+   - English Medium
+   - Hindi Medium
+   - Hinglish
+
+8. **PDF File**: File input (max 16MB)
+   - Only accepts .pdf files
 
 #### Optional Fields:
-   - **Time**: Duration of exam (e.g., "3 hr") - datalist suggestions available
-   - **Max Marks**: Maximum marks (e.g., "100") - datalist suggestions available
+
+1. **Time (Optional)**: Text input with datalist suggestions:
+   - Suggestions: 1 hr, 1 hr 30 min, 2 hr, 2 hr 30 min, 3 hr, 3 hr 30 min
+   - Can type custom time duration
+
+2. **Max Marks (Optional)**: Text input with datalist suggestions:
+   - Suggestions: 20, 54, 80, 100
+   - Can type custom marks value
 
 4. **Click "Upload Paper"** button
 5. Paper is saved with metadata automatically embedded in PDF properties
