@@ -8,6 +8,8 @@ A secure, terminal-themed web application for archiving and searching previous y
 
 > 📖 **[Read the Complete Wiki](WIKI.md)** for comprehensive documentation, advanced usage, API documentation, troubleshooting, and more!
 
+> 🆕 **[Check Recent Updates](RECENT_UPDATES.md)** for the latest enhancements including enhanced device detection, upload screenshots, and comprehensive PythonAnywhere deployment guide!
+
 ## 🎯 Project Purpose
 
 This application provides a centralized platform for students to:
