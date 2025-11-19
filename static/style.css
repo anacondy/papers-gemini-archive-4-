@@ -161,7 +161,6 @@ body {
     background-color: #111;
     box-sizing: border-box;
     z-index: 1000; /* Increased to ensure it's always on top */
-    border-top: 1px solid var(--primary-color);
     /* Add backdrop blur for better visibility */
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
