@@ -1,0 +1,25 @@
+.dropzone{
+    border:2px dashed #888;
+    padding:30px;
+    text-align:center;
+    cursor:pointer;
+    margin-bottom:10px;
+    border-radius:6px;
+}
+.dropzone.drag{
+    background:#f0f8ff;
+    border-color:#00a;
+}
+#fileList div{
+    margin:6px 0;
+}
+#fileList button{
+    margin-left:10px;
+}
+pre {
+    background:#f7f7f7;
+    padding:10px;
+    border:1px solid #ddd;
+    white-space:pre-wrap;
+    word-wrap:break-word;
+}
