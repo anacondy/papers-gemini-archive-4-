@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Metadata Ledger Upload</title>
+    <link rel="stylesheet" href="{{ url_for('ledger.static', filename='ledger.css') }}">
+</head>
+<body>
+    <h1>Metadata Ledger Upload</h1>
+    <form id="metaForm">
+        <label>Resource ID: <input type="text" id="resource_id" required /></label><br/>
+        <label>Created By: <input type="text" id="created_by" /></label><br/>
+        <label>Metadata JSON:<br/>
+        <textarea id="metadata" rows="6" cols="60">{}</textarea></label><br/>
+        
+        <div id="dropzone" class="dropzone">
+            Drag and drop files here or click to select
+        </div>
+        <input type="file" id="fileInput" multiple style="display:none" />
+        <div id="fileList"></div>
+        <br/>
+        <button type="submit">Upload</button>
+    </form>
+    <pre id="response"></pre>
+    <script src="{{ url_for('ledger.static', filename='ledger.js') }}"></script>
+</body>
+</html>
