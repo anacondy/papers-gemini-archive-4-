@@ -156,10 +156,17 @@ body {
     left: 0;
     width: 100%;
     padding: 10px;
+    /* Add safe area insets for devices with notches (iPhone X, etc.) */
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
     background-color: #111;
     box-sizing: border-box;
-    z-index: 100;
-    border-top: 1px solid var(--primary-color);
+    z-index: 1000; /* Increased to ensure it's always on top */
+    /* Add backdrop blur for better visibility */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    /* Prevent layout shift when keyboard appears */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
 }
 
 #mobile-search-input {
@@ -169,11 +176,13 @@ body {
     border: 1px solid var(--primary-color);
     color: var(--text-color);
     font-family: var(--font-family);
-    font-size: 1rem;
+    font-size: 16px; /* Prevents auto-zoom on iOS when focusing */
     outline: none;
     box-sizing: border-box;
     border-radius: 5px;
     transition: border-color 0.2s ease;
+    /* Prevent iOS zoom on focus */
+    -webkit-text-size-adjust: 100%;
 }
 
 #mobile-search-input:focus {
@@ -183,7 +192,9 @@ body {
 
 /* When the body has the 'is-mobile' class (set by JS), apply these styles */
 body.is-mobile {
-    padding-bottom: 80px; /* Make space for the fixed search bar */
+    padding-bottom: 90px; /* Increased space for the fixed search bar with safe area */
+    /* Add safe area insets for full-screen mobile devices */
+    padding-bottom: calc(90px + env(safe-area-inset-bottom));
 }
 body.is-mobile #mobile-search-container {
     display: block; /* Show the mobile search bar */

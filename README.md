@@ -468,10 +468,14 @@ This repository includes a static demo page in the `/docs` folder. To enable Git
 4. The demo will be available at: `https://anacondy.github.io/papers-gemini-archive-4-/`
 
 **Note**: GitHub Pages only hosts the static demo page. For the full Flask application, deploy to a platform that supports Python:
-- **Heroku**: Easy deployment with Git push
-- **PythonAnywhere**: Free tier available for Python apps
+- **PythonAnywhere**: Free tier available - see [PYTHONANYWHERE_DEPLOYMENT.md](PYTHONANYWHERE_DEPLOYMENT.md) for quick setup guide
+- **Heroku**: Easy deployment with Git push - see [DEPLOYMENT.md](DEPLOYMENT.md)
 - **AWS/DigitalOcean**: Full control with VPS hosting
 - **Render/Railway**: Modern deployment platforms
+
+For detailed deployment instructions, see:
+- **[PYTHONANYWHERE_DEPLOYMENT.md](PYTHONANYWHERE_DEPLOYMENT.md)** - Quick guide with required files checklist
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Comprehensive deployment guide for all platforms
 
 ## 📄 License
 
@@ -514,6 +518,8 @@ For more detailed information, please refer to:
   - FAQ and more
 
 - **[QUICKSTART.md](QUICKSTART.md)** - Quick setup guide for getting started in 5 minutes
+- **[PYTHONANYWHERE_DEPLOYMENT.md](PYTHONANYWHERE_DEPLOYMENT.md)** - PythonAnywhere deployment with required files checklist
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Complete deployment guide for multiple platforms
 - **[SECURITY.md](SECURITY.md)** - Security policies, best practices, and vulnerability reporting
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Guidelines for contributing to the project
 
