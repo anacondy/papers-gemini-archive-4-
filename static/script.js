@@ -39,14 +39,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // Additional mobile/tablet detection based on screen size and touch
+        const width = window.innerWidth;
         if (!deviceInfo.isMobile && ('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0)) {
-            const width = window.innerWidth;
             if (width <= 768) {
                 deviceInfo.isMobile = true;
             } else if (width <= 1024) {
                 deviceInfo.isTablet = true;
                 deviceInfo.isMobile = true; // Treat tablets as mobile for search bar
             }
+        }
+        
+        // Also detect based on viewport width alone (for browser dev tools and small screens)
+        if (!deviceInfo.isMobile && width <= 768) {
+            deviceInfo.isMobile = true;
+            deviceInfo.os = deviceInfo.os + ' (Small Screen)';
         }
         
         // Detect Browser
