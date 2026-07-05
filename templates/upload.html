@@ -26,7 +26,7 @@
         <p>Fill in the details below.</p>
 
         <label for="admin_name">Your Name:</label>
-        <input type="text" name="admin_name" id="admin_name" placeholder="e.g., Alvido" required>
+        <input type="text" name="admin_name" id="admin_name" placeholder="e.g., Alvido" value="{{ default_admin_name or '' }}" required>
 
         <label for="class">Class:</label>
         <select name="class" id="class" required>

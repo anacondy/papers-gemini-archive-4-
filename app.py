@@ -96,7 +96,10 @@ def terminal_ui():
 def upload_form():
     if not check_admin_auth():
         return redirect(url_for('admin_login'))
-    return render_template('upload.html')
+    return render_template(
+        'upload.html',
+        default_admin_name=os.environ.get('ADMIN_NAME', 'Alvido')
+    )
 
 
 @app.route('/admin/login', methods=['GET', 'POST'])
