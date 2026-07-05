@@ -1,13 +1,21 @@
 import os
-import re
 import secrets
 from flask import Flask, request, render_template, redirect, url_for, jsonify, send_from_directory, session, abort
-from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash, generate_password_hash
-from pypdf import PdfReader, PdfWriter
 from dotenv import load_dotenv
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from services.http_responses import create_error_response, create_success_response
+from services.paper_index import list_papers
+from services.upload_utils import (
+    allowed_file as is_allowed_file,
+    sanitize as sanitize_input,
+    extract_sanitized_fields,
+    build_storage_filename,
+    file_size_exceeds_limit,
+    write_pdf_metadata,
+    validate_safe_serving_path,
+)
 
 # Load environment variables
 load_dotenv()
@@ -32,37 +40,6 @@ SECURITY_HEADERS = {
     'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'"
 }
 
-# HTML Response Templates
-HTML_ERROR_TEMPLATE = """
-<style> 
-    body {{ font-family: sans-serif; background-color: #1a1a1a; color: #e0e0e0; padding: 40px; }} 
-    h1 {{ color: #4CAF50; }} 
-    p {{ color: #bbb; }} 
-    a {{ display: inline-block; margin-top: 20px; padding: 10px 15px; background-color: #4CAF50; 
-         color: white; text-decoration: none; border-radius: 4px; }} 
-    a:hover {{ background-color: #45a049; }} 
-</style>
-<h1>{title}</h1>
-<p>{message}</p>
-{links}
-"""
-
-HTML_SUCCESS_TEMPLATE = """
-<style> 
-    body {{ font-family: sans-serif; background-color: #1a1a1a; color: #e0e0e0; padding: 40px; }} 
-    h1 {{ color: #4CAF50; }} 
-    p {{ color: #bbb; }} 
-    a {{ display: inline-block; margin-top: 20px; padding: 10px 15px; background-color: #4CAF50; 
-         color: white; text-decoration: none; border-radius: 4px; }} 
-    a:hover {{ background-color: #45a049; }} 
-</style>
-<h1>File Uploaded Successfully!</h1> 
-<p>Metadata has been written directly into the PDF properties.</p> 
-<p><strong>Saved as:</strong> {filename}</p> 
-<a href="/">Go to Home Page</a> 
-<a href="/admin">Upload Another</a>
-"""
-
 # Flask App Initialization
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -82,21 +59,9 @@ limiter = Limiter(
     storage_uri=os.environ.get('RATELIMIT_STORAGE_URL', 'memory://')
 )
 
-# Simple admin password (hashed)
-ADMIN_PASSWORD_HASH = generate_password_hash(os.environ.get('ADMIN_PASSWORD', 'changeme'))
-
-
-# Helper Functions
-def allowed_file(filename):
-    """Check if the file extension is allowed."""
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-def sanitize(text):
-    """Sanitize text to prevent injection attacks."""
-    if not text:
-        return ""
-    return "".join(c for c in text if c.isalnum() or c in (' ', '_', '-')).rstrip()
+# Admin password hash for runtime auth checks.
+# If ADMIN_PASSWORD is unset, a random one-time value is used so no static default exists.
+ADMIN_PASSWORD_HASH = generate_password_hash(os.environ.get('ADMIN_PASSWORD', secrets.token_urlsafe(32)))
 
 
 def check_admin_auth():
@@ -104,19 +69,14 @@ def check_admin_auth():
     return session.get('admin_authenticated', False)
 
 
-def create_html_response(template, **kwargs):
-    """Create an HTML response using a template."""
-    return template.format(**kwargs)
+def allowed_file(filename):
+    """Backwards-compatible helper used by tests and route logic."""
+    return is_allowed_file(filename, ALLOWED_EXTENSIONS)
 
 
-def create_error_response(title, message, links=''):
-    """Create a standardized error response."""
-    return create_html_response(HTML_ERROR_TEMPLATE, title=title, message=message, links=links)
-
-
-def create_success_response(filename):
-    """Create a standardized success response."""
-    return create_html_response(HTML_SUCCESS_TEMPLATE, filename=filename)
+def sanitize(text):
+    """Backwards-compatible helper used by tests and route logic."""
+    return sanitize_input(text)
 
 
 @app.after_request
@@ -163,7 +123,7 @@ def admin_logout():
 @app.route('/upload', methods=['POST'])
 @limiter.limit(RATE_LIMIT_UPLOAD)
 def upload_file():
-    """Handle file upload with validation and metadata embedding."""
+    """Handle upload request, validation, storage, and metadata write flow."""
     # Check admin authentication
     if not check_admin_auth():
         return create_error_response(
@@ -182,126 +142,73 @@ def upload_file():
         )
 
     file = request.files['file']
-
-    # Safely get all fields and sanitize them
-    admin_name = sanitize(request.form.get('admin_name', ''))
-    class_name = sanitize(request.form.get('class', ''))
-    subject = sanitize(request.form.get('subject', ''))
-    semester = sanitize(request.form.get('semester', ''))
-    exam_year = sanitize(request.form.get('exam_year', ''))
-    exam_type = sanitize(request.form.get('exam_type', ''))
-    medium = sanitize(request.form.get('medium', ''))
-    time = sanitize(request.form.get('time', 'N/A'))  # Default to 'N/A' if empty
-    max_marks = sanitize(request.form.get('max_marks', 'N/A'))  # Default to 'N/A' if empty
+    fields = extract_sanitized_fields(request.form)
 
     # Check if all required fields are filled
-    if file.filename == '' or not all([admin_name, class_name, subject, semester, exam_year, exam_type, medium]):
+    if file.filename == '' or not all([
+        fields['admin_name'],
+        fields['class_name'],
+        fields['subject'],
+        fields['semester'],
+        fields['exam_year'],
+        fields['exam_type'],
+        fields['medium'],
+    ]):
         return create_error_response(
             'Empty Required Field',
             'One or more required fields are empty.',
             '<a href="/admin">Go Back</a>'
         )
 
-    if file and allowed_file(file.filename):
-        # Check file size
-        file.seek(0, os.SEEK_END)
-        file_size = file.tell()
-        file.seek(0)
-        
-        if file_size > MAX_FILE_SIZE:
-            return create_error_response(
-                'File Too Large',
-                f'Maximum file size is {MAX_FILE_SIZE / 1024 / 1024}MB.',
-                '<a href="/admin">Go Back</a>'
-            )
-        
-        # Create filename with tags
-        tags = [class_name, subject, f"Sem-{semester}", exam_year, exam_type, medium, admin_name]
-        filename_prefix = "_".join(f"[{tag}]" for tag in tags)
-        original_secure_name = secure_filename(file.filename)
-        original_base, original_ext = os.path.splitext(original_secure_name)
-        new_filename = f"{filename_prefix}_{original_base}{original_ext}"
-        
-        # Ensure filename is safe and doesn't contain path traversal
-        new_filename = os.path.basename(new_filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], new_filename)
-        
-        # Check if file already exists
-        if os.path.exists(filepath):
-            return create_error_response(
-                'File Already Exists',
-                'A file with similar details already exists.',
-                '<a href="/admin">Go Back</a>'
-            )
-        
-        # Save file
-        file.save(filepath)
-
-        # Add metadata to PDF
-        try:
-            reader = PdfReader(filepath)
-            writer = PdfWriter()
-            for page in reader.pages: 
-                writer.add_page(page)
-            keywords = f"{class_name}, {exam_year}, Sem {semester}, {exam_type}, {medium}, Time: {time}, Marks: {max_marks}"
-            writer.add_metadata({
-                "/Author": admin_name, 
-                "/Title": f"{class_name} - {subject} (Sem {semester})", 
-                "/Subject": subject,
-                "/Keywords": keywords
-            })
-            with open(filepath, "wb") as f:
-                writer.write(f)
-        except Exception as e:
-            print(f"Could not write metadata. Error: {e}")
-            # Clean up file if metadata writing fails
-            if os.path.exists(filepath):
-                os.remove(filepath)
-            return create_error_response(
-                'Error Processing PDF',
-                'Failed to process the PDF file. Please try again.',
-                '<a href="/admin">Go Back</a>'
-            )
-
-        return create_success_response(new_filename)
-    else:
+    if not file or not allowed_file(file.filename):
         return create_error_response(
             'Invalid File Type',
             'Only PDF files are allowed.',
             '<a href="/admin">Go Back</a>'
         )
 
+    if file_size_exceeds_limit(file, MAX_FILE_SIZE):
+        return create_error_response(
+            'File Too Large',
+            f'Maximum file size is {MAX_FILE_SIZE / 1024 / 1024}MB.',
+            '<a href="/admin">Go Back</a>'
+        )
+
+    new_filename = build_storage_filename(fields, file.filename)
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], new_filename)
+
+    if os.path.exists(filepath):
+        return create_error_response(
+            'File Already Exists',
+            'A file with similar details already exists.',
+            '<a href="/admin">Go Back</a>'
+        )
+
+    file.save(filepath)
+
+    try:
+        write_pdf_metadata(filepath, fields)
+    except Exception as e:
+        print(f"Could not write metadata. Error: {e}")
+        if os.path.exists(filepath):
+            os.remove(filepath)
+        return create_error_response(
+            'Error Processing PDF',
+            'Failed to process the PDF file. Please try again.',
+            '<a href="/admin">Go Back</a>'
+        )
+
+    return create_success_response(new_filename)
+
 
 @app.route('/api/papers')
 @limiter.limit(RATE_LIMIT_API)
 def get_papers():
     """Return list of all uploaded papers in JSON format."""
-    papers = []
-    pattern = re.compile(r"\[(.*?)\]_\[(.*?)\]_\[(.*?)\]_\[(.*?)\]_\[(.*?)\]_\[(.*?)\]_\[(.*?)\]_(.*\.pdf)",
-                         re.IGNORECASE)
-    
-    if not os.path.exists(app.config['UPLOAD_FOLDER']):
-        return jsonify(papers)
-    
-    for filename in os.listdir(app.config['UPLOAD_FOLDER']):
-        match = pattern.match(filename)
-        if match:
-            try:
-                groups = match.groups()
-                paper_details = {
-                    'class': groups[0], 
-                    'subject': groups[1], 
-                    'semester': groups[2].replace('Sem-', ''),
-                    'year': groups[3], 
-                    'exam_type': groups[4], 
-                    'medium': groups[5], 
-                    'uploader': groups[6],
-                    'original_name': groups[7], 
-                    'url': url_for('get_uploaded_file', filename=filename)
-                }
-                papers.append(paper_details)
-            except Exception as e:
-                print(f"Error processing matched file {filename}: {e}")
+    papers = list_papers(
+        app.config['UPLOAD_FOLDER'],
+        lambda filename: url_for('get_uploaded_file', filename=filename)
+    )
     return jsonify(papers)
 
 
@@ -320,24 +227,8 @@ def get_uploaded_file(filename):
     Note: CodeQL may flag this as a potential path injection, but this is
     a false positive due to the multiple layers of protection implemented.
     """
-    # Sanitize filename to prevent directory traversal
-    filename = os.path.basename(filename)
-    
-    # Additional check: ensure filename doesn't contain path separators
-    if os.path.sep in filename or (os.path.altsep and os.path.altsep in filename):
-        abort(404)
-    
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    
-    # Ensure the file exists and is within the upload folder
-    upload_folder_abs = os.path.abspath(app.config['UPLOAD_FOLDER'])
-    filepath_abs = os.path.abspath(filepath)
-    
-    # Double check: path must start with upload folder and must be a file
-    if not filepath_abs.startswith(upload_folder_abs + os.path.sep) and filepath_abs != upload_folder_abs:
-        abort(404)
-    
-    if not os.path.exists(filepath) or not os.path.isfile(filepath):
+    safe_filename = validate_safe_serving_path(app.config['UPLOAD_FOLDER'], filename)
+    if not safe_filename:
         abort(404)
     
     # Optional forced download mode. Default behavior keeps PDFs viewable in-browser.
@@ -347,14 +238,14 @@ def get_uploaded_file(filename):
     # Flask's send_from_directory provides additional security
     response = send_from_directory(
         app.config['UPLOAD_FOLDER'],
-        filename,
+        safe_filename,
         as_attachment=force_download,
-        download_name=filename if force_download else None
+        download_name=safe_filename if force_download else None
     )
 
     # Ensure inline rendering by default when browsers support it.
     if not force_download:
-        response.headers['Content-Disposition'] = f'inline; filename="{filename}"'
+        response.headers['Content-Disposition'] = f'inline; filename="{safe_filename}"'
 
     return response
 

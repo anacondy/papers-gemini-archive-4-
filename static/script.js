@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             os: 'Unknown',
             browser: 'Unknown'
         };
-        
+
         // Detect Operating System
         if (/android/i.test(userAgent)) {
             deviceInfo.os = 'Android';
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (/CrOS/i.test(userAgent)) {
             deviceInfo.os = 'Chrome OS';
         }
-        
+
         // Additional mobile/tablet detection based on screen size and touch
         const width = window.innerWidth;
         if (!deviceInfo.isMobile && ('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0)) {
@@ -48,13 +48,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 deviceInfo.isMobile = true; // Treat tablets as mobile for search bar
             }
         }
-        
+
         // Also detect based on viewport width alone (for browser dev tools and small screens)
         if (!deviceInfo.isMobile && width <= 768) {
             deviceInfo.isMobile = true;
             deviceInfo.os = deviceInfo.os + ' (Small Screen)';
         }
-        
+
         // Detect Browser
         if (/chrome|chromium|crios/i.test(userAgent) && !/edge|edg/i.test(userAgent)) {
             deviceInfo.browser = 'Chrome';
@@ -67,11 +67,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (/msie|trident/i.test(userAgent)) {
             deviceInfo.browser = 'Internet Explorer';
         }
-        
+
         // Store device info globally for potential logging
         window.deviceInfo = deviceInfo;
         isMobile = deviceInfo.isMobile;
-        
+
         // Apply appropriate UI based on device type
         if (isMobile) {
             body.classList.add('is-mobile');
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Hide mobile search bar on desktop
             document.getElementById('mobile-search-container').style.display = 'none';
         }
-        
+
         // Log device info for debugging (optional)
         console.log('Device Detection:', deviceInfo);
     }
@@ -191,7 +191,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function start() {
-        addLine('// Welcome to the Terminal Archives.', 'comment'); await sleep(500);
+        addLine('// Welcome to the Terminal Archives.', 'comment');
+        await sleep(500);
         await showProgressBar('Connecting to archives...', 1500);
         try {
             const response = await fetch('/api/papers');
