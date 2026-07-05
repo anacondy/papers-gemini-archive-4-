@@ -36,7 +36,7 @@
 │  │              Business Logic                      │  │
 │  │  • Input Validation & Sanitization              │  │
 │  │  • File Type Checking (PDF only)                │  │
-│  │  • Size Limit Enforcement (10MB)                │  │
+│  │  • Size Limit Enforcement (16MB)                │  │
 │  │  • Path Traversal Prevention                    │  │
 │  │  • Filename Generation                          │  │
 │  └───────────────────────────────────────────────────┘  │
@@ -103,7 +103,7 @@
 3. POST /upload with multipart/form-data
    ├── Validate required fields
    ├── Check file type (PDF only)
-   ├── Check file size (<10MB)
+   ├── Check file size (<16MB)
    ├── Sanitize inputs
    ├── Generate secure filename
    ├── Save to uploads/
@@ -152,7 +152,7 @@ def validate_filename(filename):
 
 ### Layer 2: File Upload Protection
 ```python
-MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
+MAX_FILE_SIZE = 16 * 1024 * 1024  # 16MB
 ALLOWED_EXTENSIONS = {'pdf'}
 
 def allowed_file(filename):

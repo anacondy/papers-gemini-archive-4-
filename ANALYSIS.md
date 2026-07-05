@@ -44,7 +44,7 @@ This is a web-based application for archiving and searching previous year exam p
 
 2. **File Upload Security**
    - PDF-only restriction
-   - 10MB file size limit
+   - 16MB file size limit
    - Secure filename generation (werkzeug)
    - Path traversal prevention
    - Double validation of extensions
