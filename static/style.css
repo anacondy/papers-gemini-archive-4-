@@ -65,6 +65,12 @@ body {
     border-bottom-style: solid;
 }
 
+.search-result .download-link {
+    margin-left: 0.5rem;
+    color: var(--primary-color);
+    border-bottom-style: dotted;
+}
+
 /* Progress Bar Styles */
 .progress-bar-container { 
     display: flex; 

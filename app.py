@@ -340,8 +340,23 @@ def get_uploaded_file(filename):
     if not os.path.exists(filepath) or not os.path.isfile(filepath):
         abort(404)
     
+    # Optional forced download mode. Default behavior keeps PDFs viewable in-browser.
+    download_param = request.args.get('download', '').lower()
+    force_download = download_param in {'1', 'true', 'yes'}
+
     # Flask's send_from_directory provides additional security
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    response = send_from_directory(
+        app.config['UPLOAD_FOLDER'],
+        filename,
+        as_attachment=force_download,
+        download_name=filename if force_download else None
+    )
+
+    # Ensure inline rendering by default when browsers support it.
+    if not force_download:
+        response.headers['Content-Disposition'] = f'inline; filename="{filename}"'
+
+    return response
 
 
 @app.errorhandler(404)

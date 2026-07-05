@@ -2,6 +2,10 @@
 
 A secure, terminal-themed web application for archiving and searching previous year exam papers. Built with Flask and designed with a retro terminal aesthetic.
 
+> 🌐 **GitHub Pages Demo (Live): https://anacondy.github.io/papers-gemini-archive-4-/**
+>
+> 📦 **GitHub Repository: https://github.com/anacondy/papers-gemini-archive-4-**
+
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Python](https://img.shields.io/badge/python-3.8+-blue)
 ![Flask](https://img.shields.io/badge/flask-3.0.0-lightgrey)
@@ -89,7 +93,8 @@ This application provides a centralized platform for students to:
 1. **Desktop**: Press `Ctrl+K` to open search modal
 2. **Mobile**: Use the search bar at the bottom
 3. Type your query (e.g., "Physics 2024", "BSc Semester I")
-4. Click on results to download papers
+4. Click on a result to open a PDF in your browser
+5. Use the `[download]` link beside a result to download the PDF file
 
 ### For Admins (Uploading Papers)
 

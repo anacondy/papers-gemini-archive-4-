@@ -66,7 +66,7 @@ Test searches with:
 **Invalid Uploads (Should Fail):**
 - [ ] Empty file name
 - [ ] Missing required fields
-- [ ] File > 10MB (should reject)
+- [ ] File > 16MB (should reject)
 - [ ] Non-PDF file (.txt, .doc, .jpg)
 - [ ] PDF with .txt extension
 - [ ] Empty form submission

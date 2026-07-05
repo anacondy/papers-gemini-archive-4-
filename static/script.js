@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 addLine(`Found <span class="highlight">${results.length}</span> result(s):`);
                 results.forEach(paper => {
                     const title = `${paper.class} ${paper.subject} (Sem ${paper.semester}) - ${paper.year}`;
-                    addLine(`  <div class="search-result">[${paper.year}] <a href="${paper.url}" target="_blank">${title}</a></div>`);
+                    addLine(`  <div class="search-result">[${paper.year}] <a href="${paper.url}" target="_blank" rel="noopener noreferrer">${title}</a> <a class="download-link" href="${paper.url}?download=1" target="_blank" rel="noopener noreferrer">[download]</a></div>`);
                 });
             } else {
                 addLine('No results found for your query.');
@@ -245,6 +245,19 @@ document.addEventListener('DOMContentLoaded', () => {
             mobileSearchInput.value = ''; // Clear input after search
             mobileSearchInput.blur(); // Hide keyboard
         }
+    });
+
+    // Keep device mode in sync for orientation and viewport changes.
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+        if (resizeTimer) {
+            clearTimeout(resizeTimer);
+        }
+        resizeTimer = setTimeout(detectDevice, 120);
+    });
+
+    window.addEventListener('orientationchange', () => {
+        setTimeout(detectDevice, 120);
     });
 
     start();
