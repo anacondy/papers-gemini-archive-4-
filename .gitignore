@@ -56,3 +56,5 @@ htmlcov/
 .tox/
 coverage.xml
 *.cover
+
+.flask_secret_key
